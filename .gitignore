@@ -1,0 +1,7 @@
+.env
+screenshots/
+node_modules/
+*.png
+*.jpg
+*.jpeg
+.DS_Store

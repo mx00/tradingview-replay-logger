@@ -1,0 +1,1 @@
+{"name":"tv-replay-logger","version":"1.0.0","type":"module","private":true,"scripts":{"monitor":"node trade-monitor.js"},"dependencies":{"ws":"^8.18.0"}}
