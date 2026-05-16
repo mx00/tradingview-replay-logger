@@ -7,7 +7,6 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
-import { execSync } from "child_process";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const envPath = path.join(__dirname, ".env");
@@ -192,18 +191,21 @@ async function upsertTradeDay(trade) {
 
 async function screenshotDataUrl(filePath) {
   if (!filePath || !fs.existsSync(filePath)) return null;
-  let source = filePath;
-  const ext = path.extname(filePath);
-  const tmp = filePath.replace(ext, "_tradenote.jpg");
-  try {
-    execSync(`sips -Z 1280 --setProperty formatOptions 60 --setProperty format jpeg "${filePath}" --out "${tmp}" 2>/dev/null`, { stdio: "ignore" });
-    if (fs.existsSync(tmp)) source = tmp;
-  } catch {}
-  const raw = fs.readFileSync(source);
-  const mime = source.toLowerCase().endsWith(".jpg") || source.toLowerCase().endsWith(".jpeg") ? "image/jpeg" : "image/png";
+
+  const raw = fs.readFileSync(filePath);
+
+  const mime =
+    filePath.toLowerCase().endsWith(".jpg") ||
+    filePath.toLowerCase().endsWith(".jpeg")
+      ? "image/jpeg"
+      : "image/png";
+
   const out = `data:${mime};base64,${raw.toString("base64")}`;
-  console.log(`   📸 Screenshot payload: ${Math.round(raw.length / 1024)} KB`);
-  if (source === tmp) { try { fs.unlinkSync(tmp); } catch {} }
+
+  console.log(
+    `   📸 Screenshot payload: ${Math.round(raw.length / 1024)} KB`
+  );
+
   return out;
 }
 
